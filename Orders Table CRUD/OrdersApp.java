@@ -4,95 +4,112 @@ import java.sql.SQLException;
 import java.util.Scanner;
 
 public class OrdersApp {
+
 	private static Scanner scan = new Scanner(System.in);
+
+	public OrdersApp() {
+
+	}
+
+	private static String getAction() {
+		System.out.println(
+				"Welcome to the Orders Table \n" + "================================ \n" + "Type 'create' to CREATE \n"
+						+ "Type 'print' to PRINT \n" + "Type 'update' to UPDATE \n" + "Type 'delete' to DELETE \n"
+						+ "Type 'total' to get the PRICE TOTAL of an ORDER. \n" + "Or 'menu' to go back to MAIN MENU");
+		return scan.nextLine().toLowerCase();
+	}
 
 	public void OrdersRunner() throws SQLException {
 		Orders dborders = new Orders();
 
-		try {
-			String action = "";
-			action = getAction();
+		String action = "";
+		action = getAction();
 
-			do {
+		String input = "";
 
-				switch (action) {
+		do {
 
-				case "create":
+			switch (action) {
 
-					System.out.println("Enter OID:");
-					int OID = scan.nextInt();
-					scan.nextLine();
+			case "create":
 
-					System.out.println("Enter the Product ID (PID): ");
-					int fk_PID = scan.nextInt();
-					scan.nextLine();
+				System.out.println("Enter OID:");
+				int OID = scan.nextInt();
+				scan.nextLine();
 
-					System.out.println("Enter the Customer ID (CID): ");
-					int fk_CID = scan.nextInt();
-					scan.nextLine();
+				System.out.println("Enter the Product ID (PID): ");
+				int fk_PID = scan.nextInt();
+				scan.nextLine();
 
-					System.out.println("Enter the total of the order:");
-					double total = scan.nextDouble();
-					scan.nextLine();
+				System.out.println("Enter the Customer ID (CID): ");
+				int fk_CID = scan.nextInt();
+				scan.nextLine();
 
-					dborders.createOrders(OID, fk_PID, fk_CID, total);
-					break;
+				System.out.println("Enter the Quantity:");
+				int quantity = scan.nextInt();
+				scan.nextLine();
 
-				case "print":
-					dborders.printOrders();
-					break;
+				dborders.createOrders(OID, fk_PID, fk_CID, quantity);
+				System.out.println("Order information was added to the table.");
+				break;
 
-				case "update":
+			case "print":
+				dborders.printOrders();
+				break;
 
-					System.out.println("Enter OID ");
-					int upOID = scan.nextInt();
-					scan.nextLine();
+			case "update":
 
-					System.out.println("Enter Updated (fk)PID: ");
-					int upfk_PID = scan.nextInt();
-					scan.nextLine();
+				System.out.println("Enter OID ");
+				int upOID = scan.nextInt();
+				scan.nextLine();
 
-					System.out.println("Enter Updated (fk)CID: ");
-					int upfk_CID = scan.nextInt();
-					scan.nextLine();
+				System.out.println("Enter Updated (fk)PID: ");
+				int upfk_PID = scan.nextInt();
+				scan.nextLine();
 
-					System.out.println("Enter Updated Total Price: ");
-					double uptotal = scan.nextDouble();
-					scan.nextLine();
+				System.out.println("Enter Updated (fk)CID: ");
+				int upfk_CID = scan.nextInt();
+				scan.nextLine();
 
-					dborders.updateOrders(upOID, upfk_PID, upfk_CID, uptotal);
-					System.out.println("Update Succesful!");
-					break;
+				System.out.println("Enter Updated Quantity: ");
+				int upquantity = scan.nextInt();
+				scan.nextLine();
 
-				case "delete":
-					System.out.println("Enter the OID:");
-					int delOID = Integer.parseInt(scan.nextLine());
-					dborders.deleteOrders(delOID);
-					System.out.println("Information has been deleted");
-					break;
+				dborders.updateOrders(upOID, upfk_PID, upfk_CID, upquantity);
+				System.out.println("Update Succesful!");
+				break;
 
-				default:
-					System.out.println("No matching case");
+			case "delete":
+				System.out.println("Enter the OID:");
+				int delOID = Integer.parseInt(scan.nextLine());
+				dborders.deleteOrders(delOID);
+				System.out.println("Information has been deleted");
+				break;
 
-				}
+			case "total":
+				System.out.println("which order do you want to calculate? (Enter OID)");
+				int totOID = scan.nextInt();
+				scan.nextLine();
+				dborders.totalOrders(totOID);
+				break;
 
+			default:
+				System.out.println("No matching case");
+
+			}
+
+			System.out.println(
+					"Type 'menu' to go back to the MAIN MENU \n" + "Type 'table' to go back to the TABLE MENU");
+			input = scan.nextLine();
+			if (input.equals("menu")) {
+				action = "back";
+				break;
+			} else if (input.equals("table")) {
 				action = getAction();
 
-			} while (!action.equals("quit"));
-			System.out.println("Program has Ended");
+			}
 
-		} finally {
+		} while (!action.equals("back"));
 
-			scan.close();
-			dborders.close();
-		}
 	}
-
-	private static String getAction() {
-		System.out.println("Welcome to the Orders Table \n" + "================================ \n"
-				+ "Type 'create' to CREATE \n" + "Type 'print' to PRINT \n" + "Type 'update' to UPDATE \n"
-				+ "Type 'delete' to DELETE \n" + "Or 'quit' to QUIT.");
-		return scan.nextLine().toLowerCase();
-	}
-
 }

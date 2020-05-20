@@ -20,37 +20,58 @@ public class Orders {
 		conn.close();
 	}
 
-	public void createOrders(int OID, int fk_PID, int fk_CID, double total) throws SQLException {
+	public void createOrders(int OID, int fk_PID, int fk_CID, int quantity) throws SQLException {
 		this.stmt = conn.createStatement();
-		String sql = "INSERT INTO orders (OID, fk_PID, fk_CID, total) VALUES (" + OID + ", \"" + fk_PID + "\", \""
-				+ fk_CID + "\", \"" + total + "\")";
+		String sql = "INSERT INTO orders (OID, fk_PID, fk_CID, quantity) VALUES (" + OID + ", \"" + fk_PID + "\", \""
+				+ fk_CID + "\", \"" + quantity + "\")";
 		stmt.executeUpdate(sql);
 	}
 
 	public void printOrders() throws SQLException {
 		ResultSet rs = stmt.executeQuery("SELECT * FROM orders");
+
+		System.out.println("OID / PID / CID / Quantity ");
+
 		while (rs.next()) {
 			String name = rs.getInt("OID") + " " + rs.getInt("fk_PID") + " " + rs.getInt("fk_CID") + " "
-					+ rs.getDouble("total");
+					+ rs.getInt("quantity");
 			System.out.println(name);
 		}
 	}
 
-//	public void updateOrders(String fName, String lName, int cid) throws SQLException {
-//		stmt.executeUpdate(
-//				"UPDATE customer SET first_name = '" + fName + "', last_name = '" + lName + "' WHERE cid = " + cid);
-//	}
+	public void updateOrders(int OID, int fk_PID, int fk_CID, int quantity) throws SQLException {
 
-	public void updateOrders(int OID, int fk_PID, int fk_CID, double total) throws SQLException {
-
-		String upt = "UPDATE orders SET fk_PID = '" + fk_PID + "'," + " fk_CID = '" + fk_CID + "'," + " total = '"
-				+ total + "'" + "WHERE OID =  " + OID;
+		String upt = "UPDATE orders SET fk_PID = '" + fk_PID + "'," + " fk_CID = '" + fk_CID + "'," + " quantity = '"
+				+ quantity + "'" + "WHERE OID =  " + OID;
 		stmt.executeUpdate(upt);
 	}
 
 	public void deleteOrders(int OID) throws SQLException {
+
 		String delete = "DELETE FROM orders WHERE OID = " + OID + " ";
 		stmt.executeUpdate(delete);
 	}
 
+	public void totalOrders(int OID) throws SQLException {
+		ResultSet rs = stmt.executeQuery(
+				"select (products.price * orders.quantity) AS order_total FROM products, orders WHERE products.PID = orders.fk_PID "
+						+ "AND OID = " + OID);
+		while (rs.next()) {
+			double total = rs.getDouble("order_total");
+			System.out.println(total);
+		}
+
+	}
+
+//	public void calcOrder() throws SQLException {
+//		this.stmt = conn.createStatement();
+//		System.out.println("how much ");
+//		String sql = "SELECT price * quantity AS VALUE FROM products, orders WHERE PID=4 and OID=3;
+//				+ ""
+//				+ "INSERT INTO orders (OID, fk_PID, fk_CID, quantity) VALUES (" + OID + ", \"" + fk_PID + "\", \""
+//				+ fk_CID + "\", \"" + quantity + "\")";
+//		stmt.executeUpdate(sql);
+//	}
+
+	;
 }
